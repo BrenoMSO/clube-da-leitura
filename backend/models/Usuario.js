@@ -1,0 +1,4 @@
+const usuario = {
+    nome: Text,
+    
+}
