@@ -1,4 +1,0 @@
-const usuario = {
-    nome: Text,
-    
-}
