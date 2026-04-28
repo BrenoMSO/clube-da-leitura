@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CompeticaoLeitura")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fea984cb94939ecccc351431ae4ad16662a95d2b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c5eba6dd21973afc6277ed4e5aa095a263957a6a")]
 [assembly: System.Reflection.AssemblyProductAttribute("CompeticaoLeitura")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CompeticaoLeitura")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
