@@ -1,0 +1,19 @@
+# Dependências (Backend e Frontend)
+node_modules/
+**/node_modules/
+
+# Builds de produção
+dist/
+build/
+
+# Variáveis de ambiente (Segurança máxima para não vazar a URI do banco e a API Key!)
+.env
+.env.*
+!.env.example
+
+# Logs e ficheiros de sistema
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
