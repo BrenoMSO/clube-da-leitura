@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Clube da Leitura</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Barra de Navegação -->
+  <header class="navbar">
+    <a href="dashboard.html" class="brand">
+      <span class="brand-icon">📚</span>
+      <span>Clube da Leitura</span>
+    </a>
+    <div class="nav-actions">
+      <span class="user-badge" id="user-display">Carregando...</span>
+      <button class="btn btn-outline btn-sm" id="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom: 2rem;">
+      <h1 id="welcome-title" style="font-size: 1.75rem; margin-bottom: 0.25rem;">Painel do Leitor</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Gerencie seus grupos de leitura ou ingresse em novas disputas literárias.</p>
+    </div>
+
+    <!-- Ações Rápidas: Criar ou Entrar -->
+    <div class="grid-cards" style="margin-bottom: 2.5rem;">
+      <!-- Card Criar Grupo -->
+      <div class="card">
+        <h2 class="card-title">✨ Criar Novo Grupo</h2>
+        <p class="card-subtitle">Crie um clube para competir com seus amigos ou colegas.</p>
+        <form id="form-criar-grupo">
+          <div class="form-group">
+            <label for="novo-grupo-nome">Nome do Grupo</label>
+            <input type="text" id="novo-grupo-nome" class="form-control" placeholder="Ex: Leitores Vorazes 2026" required minlength="3">
+          </div>
+          <div class="form-group">
+            <label for="novo-grupo-desc">Descrição (opcional)</label>
+            <input type="text" id="novo-grupo-desc" class="form-control" placeholder="Ex: Desafio de 1 livro por mês">
+          </div>
+          <button type="submit" id="btn-criar-grupo" class="btn btn-primary" style="width: 100%;">Criar Grupo</button>
+        </form>
+      </div>
+
+      <!-- Card Entrar com Código -->
+      <div class="card">
+        <h2 class="card-title">🔑 Entrar com Código</h2>
+        <p class="card-subtitle">Recebeu um código de 6 caracteres? Entre no clube agora.</p>
+        <form id="form-entrar-grupo">
+          <div class="form-group">
+            <label for="codigo-convite">Código de Convite</label>
+            <input 
+              type="text" 
+              id="codigo-convite" 
+              class="form-control" 
+              placeholder="Ex: ABC123" 
+              required 
+              maxlength="6"
+              style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: center;"
+            >
+          </div>
+          <button type="submit" id="btn-entrar-grupo" class="btn btn-outline" style="width: 100%; margin-top: 1.25rem;">
+            Entrar no Grupo
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Seção Meus Grupos -->
+    <section>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 700;">📖 Meus Clubes e Grupos</h2>
+        <span class="badge" id="grupos-count">0 grupos</span>
+      </div>
+
+      <div id="loading-grupos" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+        Carregando grupos...
+      </div>
+
+      <div id="empty-grupos" class="card" style="display: none; text-align: center; padding: 3rem 1.5rem;">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏖️</div>
+        <h3 style="margin-bottom: 0.5rem;">Nenhum grupo encontrado</h3>
+        <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto 1.5rem;">
+          Você ainda não faz parte de nenhum clube de leitura. Crie um grupo ou use um código de convite acima!
+        </p>
+      </div>
+
+      <div class="grid-cards" id="lista-grupos" style="display: none;">
+        <!-- Injetado dinamicamente via dashboard.js -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Clube da Leitura &bull; Gamificação e Competição de Leitura</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

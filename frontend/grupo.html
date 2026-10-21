@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Competição de Leitura - Grupo</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos específicos da tela de grupo / competição */
+    .group-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .ranking-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .ranking-table th, .ranking-table td {
+      padding: 0.875rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ranking-table th {
+      background: #f8fafc;
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .ranking-pos {
+      font-weight: 700;
+      font-size: 1.1rem;
+      width: 45px;
+      text-align: center;
+    }
+
+    .ranking-row-current {
+      background: #f0f4ff;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      background: #e2e8f0;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .book-card {
+      display: flex;
+      gap: 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .book-cover {
+      width: 80px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #cbd5e1;
+      flex-shrink: 0;
+    }
+
+    .stars-rating {
+      display: inline-flex;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+
+    .star {
+      color: #cbd5e1;
+      transition: color 0.15s ease;
+    }
+
+    .star.active {
+      color: #f59e0b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <a href="dashboard.html" class="brand">
+      <span class="brand-icon">📚</span>
+      <span>Clube da Leitura</span>
+    </a>
+    <div class="nav-actions">
+      <a href="dashboard.html" class="btn btn-outline btn-sm">⬅ Voltar aos Grupos</a>
+      <span class="user-badge" id="user-display">...</span>
+      <button class="btn btn-outline btn-sm" id="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Cabeçalho do Grupo -->
+    <div class="group-header">
+      <div>
+        <h1 id="grupo-nome" style="font-size: 1.6rem; margin-bottom: 0.25rem;">Carregando Grupo...</h1>
+        <p id="grupo-desc" style="color: var(--text-muted); font-size: 0.9rem;">...</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="background: #f8fafc; border: 1px solid var(--border); padding: 0.5rem 0.875rem; border-radius: 8px;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Código de Convite</span>
+          <strong id="grupo-codigo" style="font-size: 1.1rem; letter-spacing: 2px;">------</strong>
+        </div>
+        <button id="btn-copiar-codigo" class="btn btn-outline btn-sm">Copiar</button>
+      </div>
+    </div>
+
+    <!-- Layout Grid: Ranking vs Leituras -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+      
+      <!-- Seção 1: Ranking da Competição -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🏆</span> Ranking de Leitores
+          </h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">
+            1 página lida = 1 ponto
+          </span>
+        </div>
+
+        <div id="loading-ranking" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">
+          Calculando pontuações...
+        </div>
+
+        <table class="ranking-table" id="tabela-ranking" style="display: none;">
+          <thead>
+            <tr>
+              <th style="width: 50px;">Pos</th>
+              <th>Leitor</th>
+              <th style="text-align: right;">Páginas Lidas</th>
+              <th style="text-align: right;">Pontos</th>
+            </tr>
+          </thead>
+          <tbody id="ranking-body">
+            <!-- Linhas inseridas pelo grupo.js -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Seção 2: Adicionar Livro (Busca Google Books com Debounce de 500ms) -->
+      <section class="card">
+        <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🔍</span> Adicionar Livro ao Desafio
+        </h2>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Digite o título ou autor. A busca possui <strong>Debounce de 500ms</strong> para consultar a API do Google Books sem disparar requisições excessivas (evita erro 429).
+        </p>
+
+        <div class="form-group" style="position: relative;">
+          <input 
+            type="text" 
+            id="input-busca-livro" 
+            class="form-control" 
+            placeholder="Ex: Dom Casmurro, George Orwell, Harry Potter..." 
+            autocomplete="off"
+          >
+          <div id="busca-spinner" style="display: none; position: absolute; right: 12px; top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+            Buscando no Google Books...
+          </div>
+        </div>
+
+        <!-- Resultados da Busca -->
+        <div id="resultados-busca" style="display: none; margin-top: 1rem; max-height: 380px; overflow-y: auto; padding-right: 0.5rem;">
+          <!-- Livros encontrados pelo Google Books -->
+        </div>
+      </section>
+
+      <!-- Seção 3: Minhas Leituras no Grupo -->
+      <section class="card">
+        <h2 style="font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>📖</span> Minhas Leituras neste Grupo
+        </h2>
+
+        <div id="loading-leituras" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">
+          Carregando leituras...
+        </div>
+
+        <div id="empty-leituras" style="display: none; text-align: center; padding: 2rem; color: var(--text-muted);">
+          Você ainda não adicionou nenhum livro a este grupo. Busque um livro acima para começar!
+        </div>
+
+        <div id="lista-leituras">
+          <!-- Livros sendo lidos inseridos pelo grupo.js -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Clube da Leitura &bull; Gamificação e Competição de Leitura</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="grupo.js"></script>
+</body>
+</html>

@@ -1,13 +1,129 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clube da Leitura - Competição e Desafios de Leitura</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="logo-icon">📚</div>
+        <h1>Clube da Leitura</h1>
+        <p>Gamifique o seu hábito de leitura entre amigos</p>
+      </div>
+
+      <!-- Abas de Alternância -->
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-login-btn">Entrar</button>
+        <button class="tab-btn" id="tab-register-btn">Criar Conta</button>
+      </div>
+
+      <div class="form-container">
+        <!-- Banner de Mensagens de Erro/Sucesso -->
+        <div id="alert-box" class="alert" role="alert"></div>
+
+        <!-- Formulário de Login -->
+        <form id="form-login">
+          <div class="form-group">
+            <label for="login-email">E-mail</label>
+            <input 
+              type="email" 
+              id="login-email" 
+              class="form-control" 
+              placeholder="seu.email@exemplo.com" 
+              required
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="login-senha">Senha</label>
+            <input 
+              type="password" 
+              id="login-senha" 
+              class="form-control" 
+              placeholder="••••••••" 
+              required
+              autocomplete="current-password"
+            >
+          </div>
+
+          <button type="submit" id="btn-submit-login" class="btn btn-primary" style="width: 100%;">
+            Entrar na Minha Conta
+          </button>
+        </form>
+
+        <!-- Formulário de Registo (inicialmente oculto) -->
+        <form id="form-register" style="display: none;">
+          <div class="form-group">
+            <label for="register-nome">Nome Completo</label>
+            <input 
+              type="text" 
+              id="register-nome" 
+              class="form-control" 
+              placeholder="Ex: Maria Silva" 
+              required
+              minlength="2"
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="register-email">E-mail</label>
+            <input 
+              type="email" 
+              id="register-email" 
+              class="form-control" 
+              placeholder="seu.email@exemplo.com" 
+              required
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="register-senha">Senha</label>
+            <input 
+              type="password" 
+              id="register-senha" 
+              class="form-control" 
+              placeholder="Mínimo de 6 caracteres" 
+              required
+              minlength="6"
+              autocomplete="new-password"
+            >
+            <div class="form-help">Pelo menos 6 caracteres</div>
+          </div>
+
+          <div class="form-group">
+            <label for="register-confirmar-senha">Confirmar Senha</label>
+            <input 
+              type="password" 
+              id="register-confirmar-senha" 
+              class="form-control" 
+              placeholder="Repita a sua senha" 
+              required
+              minlength="6"
+              autocomplete="new-password"
+            >
+          </div>
+
+          <button type="submit" id="btn-submit-register" class="btn btn-primary" style="width: 100%;">
+            Criar Minha Conta
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Clube da Leitura &bull; Gamificação e Competição de Leitura</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+</body>
 </html>

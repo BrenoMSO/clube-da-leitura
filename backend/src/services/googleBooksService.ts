@@ -1,4 +1,4 @@
-/*import axios from 'axios';
+import axios from 'axios';
 
 export interface LivroGoogleBooks {
   googleBookId: string;
@@ -54,31 +54,5 @@ export class GoogleBooksService {
 }
 
 export const googleBooksService = new GoogleBooksService();
-*/
 
-import axios from 'axios'; // Ou podes usar fetch nativo do Node.js
 
-export async function buscarLivrosNoGoogle(termo: string) {
-  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-
-  // Passo de segurança educativo: Verifica se a chave existe no .env
-  if (!apiKey) {
-    throw new Error("A variável GOOGLE_BOOKS_API_KEY não está definida no ficheiro .env!");
-  }
-
-  try {
-    // Construção correta do URL incluindo a chave de API exigida pelo Google
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(termo.trim())}&maxResults=10&key=${apiKey}`;
-
-    // Executando a requisição GET
-    const resposta = await axios.get(url);
-
-    // Retorna os itens encontrados (ou um array vazio se não vier nada)
-    return resposta.data.items || [];
-    
-  } catch (erro: any) {
-    // Registo detalhado para sabermos exatamente se o erro persiste no servidor do Google
-    console.error("Erro ao comunicar com a API do Google Books:", erro.response?.data || erro.message);
-    throw new Error("Não foi possível concluir a busca de livros neste momento.");
-  }
-}
