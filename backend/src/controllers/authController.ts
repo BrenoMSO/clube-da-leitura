@@ -6,10 +6,10 @@ import { Usuario } from '../models/Usuario';
 export class AuthController {
   async registrar(req: Request, res: Response): Promise<void> {
     try {
-      const { nome, email, senha } = req.body;
+      const { nome, username, email, senha } = req.body;
 
-      if (!nome || !email || !senha) {
-        res.status(400).json({ mensagem: 'Nome, email e senha são obrigatórios.' });
+      if (!nome || !email || !senha || username) {
+        res.status(400).json({ mensagem: 'Nome, usuário, email e senha são obrigatórios.' });
         return;
       }
 
@@ -20,6 +20,12 @@ export class AuthController {
 
       const emailNormalizado = email.toLowerCase().trim();
       const usuarioExistente = await Usuario.findOne({ email: emailNormalizado });
+      const usernameExistente = await Usuario.findOne({ username: username});
+
+      if (usernameExistente) {
+        res.status(400).json({mensagem: 'Já existe um usuário com este nome'});
+        return;
+      }
 
       if (usuarioExistente) {
         res.status(400).json({ mensagem: 'Já existe uma conta cadastrada com este email.' });
@@ -31,6 +37,7 @@ export class AuthController {
 
       const novoUsuario = await Usuario.create({
         nome: nome.trim(),
+        username: username.trim(),
         email: emailNormalizado,
         senha: senhaHash,
       });
@@ -40,6 +47,7 @@ export class AuthController {
         usuario: {
           id: novoUsuario._id,
           nome: novoUsuario.nome,
+          username: novoUsuario.username,
           email: novoUsuario.email,
           createdAt: novoUsuario.createdAt,
         },
@@ -54,10 +62,13 @@ export class AuthController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      const { email, senha } = req.body;
+      const { email, senha, username } = req.body;
 
       if (!email || !senha) {
-        res.status(400).json({ mensagem: 'Email e senha são obrigatórios.' });
+        res.status(400).json({ mensagem: 'Email/Usuário e senha são obrigatórios.' });
+        return;
+      } else if ( !username || !senha) {
+        res.status(400).json({mensagem: 'Email/Usuário e senha são obrigatórios'});
         return;
       }
 
@@ -88,6 +99,7 @@ export class AuthController {
         usuario: {
           id: usuario._id,
           nome: usuario.nome,
+          username: usuario.username,
           email: usuario.email,
         },
       });

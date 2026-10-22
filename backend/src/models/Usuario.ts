@@ -2,6 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IUsuario extends Document {
   nome: string;
+  username: string
   email: string;
   senha: string;
   createdAt: Date;
@@ -12,6 +13,13 @@ const UsuarioSchema = new Schema<IUsuario>(
     nome: {
       type: String,
       required: [true, 'O nome é obrigatório.'],
+      trim: true,
+      minlength: [2, 'O nome deve ter pelo menos 2 caracteres.'],
+    },
+    username: {
+      type: String,
+      required: [true, 'User é obrigatório'],
+      unique: true,
       trim: true,
       minlength: [2, 'O nome deve ter pelo menos 2 caracteres.'],
     },
