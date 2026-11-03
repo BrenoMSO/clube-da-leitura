@@ -8,7 +8,7 @@ export class AuthController {
     try {
       const { nome, username, email, senha } = req.body;
 
-      if (!nome || !email || !senha || username) {
+      if (!nome || !email || !senha || !username) {
         res.status(400).json({ mensagem: 'Nome, usuário, email e senha são obrigatórios.' });
         return;
       }
@@ -19,8 +19,9 @@ export class AuthController {
       }
 
       const emailNormalizado = email.toLowerCase().trim();
+      const usernameNormalizado = username.trim()
       const usuarioExistente = await Usuario.findOne({ email: emailNormalizado });
-      const usernameExistente = await Usuario.findOne({ username: username});
+      const usernameExistente = await Usuario.findOne({ username: usernameNormalizado});
 
       if (usernameExistente) {
         res.status(400).json({mensagem: 'Já existe um usuário com este nome'});
@@ -37,7 +38,7 @@ export class AuthController {
 
       const novoUsuario = await Usuario.create({
         nome: nome.trim(),
-        username: username.trim(),
+        username: usernameNormalizado.trim(),
         email: emailNormalizado,
         senha: senhaHash,
       });
@@ -62,27 +63,33 @@ export class AuthController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      const { email, senha, username } = req.body;
+      const { identificador, senha } = req.body;
 
-      if (!email || !senha) {
+      if (!identificador || !senha) {
         res.status(400).json({ mensagem: 'Email/Usuário e senha são obrigatórios.' });
-        return;
-      } else if ( !username || !senha) {
-        res.status(400).json({mensagem: 'Email/Usuário e senha são obrigatórios'});
         return;
       }
 
-      const emailNormalizado = email.toLowerCase().trim();
-      const usuario = await Usuario.findOne({ email: emailNormalizado });
+      const termoBusca = identificador.trim
+
+
+  
+      
+      const usuario = await Usuario.findOne({
+        $or: [
+          {email: termoBusca.toLowerCase()},
+          {username: termoBusca}
+        ]
+      });
 
       if (!usuario) {
-        res.status(401).json({ mensagem: 'Email ou senha incorretos.' });
+        res.status(401).json({ mensagem: 'Credenciais incorretas.' });
         return;
       }
 
       const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
       if (!senhaCorreta) {
-        res.status(401).json({ mensagem: 'Email ou senha incorretos.' });
+        res.status(401).json({ mensagem: 'Credenciais incorretas.' });
         return;
       }
 

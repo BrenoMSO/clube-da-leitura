@@ -52,11 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     clearAlert();
 
-    const email = document.getElementById('login-email').value.trim();
+    const identificador = document.getElementById('login-identificador').value.trim();
     const senha = document.getElementById('login-senha').value;
 
-    if (!email || !senha) {
-      showAlert('Por favor, preencha o e-mail e a senha.');
+    if (!identificador || !senha) {
+      showAlert('Por favor, preencha o e-mail/username e a senha.');
       return;
     }
 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
+        body: JSON.stringify({ identificador, senha })
       });
 
       const data = await response.json();

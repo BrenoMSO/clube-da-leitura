@@ -5,8 +5,12 @@ interface TokenPayload {
   id: string;
 }
 
+export interface AuthRequest extends Request {
+  usuarioId?: string;
+}
+
 export const authMiddleware = (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): void => {
