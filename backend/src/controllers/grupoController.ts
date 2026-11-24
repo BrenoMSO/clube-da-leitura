@@ -37,8 +37,8 @@ export class GrupoController {
       });
 
       const grupoPopulato = await Grupo.findById(novoGrupo._id)
-        .populate('criadorId', 'nome email')
-        .populate('membros', 'nome email');
+        .populate('criadorId', 'nome email username')
+        .populate('membros', 'nome email username');
 
       res.status(201).json({
         mensagem: 'Grupo criado com sucesso!',
@@ -64,8 +64,8 @@ export class GrupoController {
       const grupos = await Grupo.find({
         membros: new Types.ObjectId(usuarioId),
       })
-        .populate('criadorId', 'nome email')
-        .populate('membros', 'nome email')
+        .populate('criadorId', 'nome email username')
+        .populate('membros', 'nome email username')
         .sort({ createdAt: -1 });
 
       res.status(200).json(grupos);
@@ -116,8 +116,8 @@ export class GrupoController {
       await grupo.save();
 
       const grupoAtualizado = await Grupo.findById(grupo._id)
-        .populate('criadorId', 'nome email')
-        .populate('membros', 'nome email');
+        .populate('criadorId', 'nome email username')
+        .populate('membros', 'nome email username');
 
       res.status(200).json({
         mensagem: 'Você entrou no grupo com sucesso!',
@@ -147,8 +147,8 @@ export class GrupoController {
       }
 
       const grupo = await Grupo.findById(grupoId)
-        .populate('criadorId', 'nome email')
-        .populate('membros', 'nome email');
+        .populate('criadorId', 'nome email username')
+        .populate('membros', 'nome email username');
 
       if (!grupo) {
         res.status(404).json({ mensagem: 'Grupo não encontrado.' });
@@ -166,15 +166,16 @@ export class GrupoController {
 
       // Buscar todas as leituras deste grupo para calcular o ranking
       const todasLeituras = await Leitura.find({ grupoId: new Types.ObjectId(grupoId) })
-        .populate('usuarioId', 'nome email');
+        .populate('usuarioId', 'nome email username');
 
       // Calcular o ranking: agrupar paginasLidas por membro do grupo
-      const pontuacaoPorUsuario: Record<string, { nome: string; email: string; pontos: number; totalLivros: number }> = {};
+      const pontuacaoPorUsuario: Record<string, { nome: string; username?: string; email: string; pontos: number; totalLivros: number }> = {};
 
       // Inicializa todos os membros com 0 pontos para que todos apareçam no ranking
       grupo.membros.forEach((membro: any) => {
         pontuacaoPorUsuario[membro._id.toString()] = {
           nome: membro.nome,
+          username: membro.username,
           email: membro.email,
           pontos: 0,
           totalLivros: 0,
@@ -193,6 +194,7 @@ export class GrupoController {
         .map(([uId, dados]) => ({
           usuarioId: uId,
           nome: dados.nome,
+          username: dados.username,
           email: dados.email,
           pontos: dados.pontos,
           totalLivros: dados.totalLivros,

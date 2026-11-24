@@ -11,13 +11,14 @@ describe('Grupos (/api/grupos)', () => {
       .post('/api/auth/registrar')
       .send({
         nome: 'Criador Grupo',
+        username: 'criador_grupo',
         email: 'criador@exemplo.com',
         senha: 'senhaCriador123',
       });
     const resLogin1 = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'criador@exemplo.com',
+        identificador: 'criador@exemplo.com',
         senha: 'senhaCriador123',
       });
     tokenUsuario1 = resLogin1.body.token;
@@ -27,13 +28,14 @@ describe('Grupos (/api/grupos)', () => {
       .post('/api/auth/registrar')
       .send({
         nome: 'Membro Grupo',
+        username: 'membro_grupo',
         email: 'membro@exemplo.com',
         senha: 'senhaMembro123',
       });
     const resLogin2 = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'membro@exemplo.com',
+        identificador: 'membro_grupo',
         senha: 'senhaMembro123',
       });
     tokenUsuario2 = resLogin2.body.token;

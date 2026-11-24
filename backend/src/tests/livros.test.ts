@@ -14,6 +14,7 @@ describe('Google Books (/api/livros/buscar)', () => {
       .post('/api/auth/registrar')
       .send({
         nome: 'Leitor Google Books',
+        username: 'leitor_google_books',
         email: 'google.books@exemplo.com',
         senha: 'senhaGoogle123',
       });
@@ -21,7 +22,7 @@ describe('Google Books (/api/livros/buscar)', () => {
     const resLogin = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'google.books@exemplo.com',
+        identificador: 'google.books@exemplo.com',
         senha: 'senhaGoogle123',
       });
     token = resLogin.body.token;

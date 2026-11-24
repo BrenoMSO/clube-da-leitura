@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-// Carregar variáveis de ambiente antes de qualquer outro import
 dotenv.config();
 
 import express, { Request, Response } from 'express';
@@ -9,6 +8,9 @@ import authRoutes from './routes/authRoutes';
 import grupoRoutes from './routes/grupoRoutes';
 import leituraRoutes from './routes/leituraRoutes';
 import livroRoutes from './routes/livroRoutes';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/grupos', grupoRoutes);
 app.use('/api/leituras', leituraRoutes);
 app.use('/api/livros', livroRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Tratamento de rotas não encontradas
 app.use((_req: Request, res: Response) => {

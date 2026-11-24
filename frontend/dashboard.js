@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnLogout = document.getElementById('btn-logout');
 
   if (user && user.nome) {
-    userDisplay.innerHTML = `Leitor: <strong>${user.nome}</strong>`;
+    const userLabel = user.username ? `${user.nome} (@${user.username})` : user.nome;
+    userDisplay.innerHTML = `Leitor: <strong>${escapeHtml(userLabel)}</strong>`;
     welcomeTitle.textContent = `Olá, ${user.nome.split(' ')[0]}!`;
   }
 

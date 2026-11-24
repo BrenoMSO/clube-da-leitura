@@ -3,30 +3,64 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Usuario } from '../models/Usuario';
 
+const escapeRegex = (str: string): string => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export class AuthController {
   async registrar(req: Request, res: Response): Promise<void> {
     try {
       const { nome, username, email, senha } = req.body;
 
-      if (!nome || !email || !senha || !username) {
+      if (!nome || !username || !email || !senha) {
         res.status(400).json({ mensagem: 'Nome, usuário, email e senha são obrigatórios.' });
         return;
       }
 
-      if (senha.length < 6) {
-        res.status(400).json({ mensagem: 'A senha deve ter pelo menos 6 caracteres.' });
+      if (typeof nome !== 'string' || nome.trim().length < 2) {
+        res.status(400).json({ mensagem: 'O nome deve ter pelo menos 2 caracteres.' });
+        return;
+      }
+
+      if (typeof username !== 'string' || username.trim().length < 2) {
+        res.status(400).json({ mensagem: 'O nome de usuário deve ter pelo menos 2 caracteres.' });
+        return;
+      }
+
+      const usernameNormalizado = username.trim();
+      const usernameRegex = /^[a-zA-Z0-9_.-]+$/;
+      if (!usernameRegex.test(usernameNormalizado)) {
+        res.status(400).json({
+          mensagem: 'O nome de usuário deve conter apenas letras, números, sublinhados (_), hífens (-) ou pontos (.).',
+        });
+        return;
+      }
+
+      if (typeof email !== 'string') {
+        res.status(400).json({ mensagem: 'Por favor, informe um email válido.' });
         return;
       }
 
       const emailNormalizado = email.toLowerCase().trim();
-      const usernameNormalizado = username.trim()
-      const usuarioExistente = await Usuario.findOne({ email: emailNormalizado });
-      const usernameExistente = await Usuario.findOne({ username: usernameNormalizado});
-
-      if (usernameExistente) {
-        res.status(400).json({mensagem: 'Já existe um usuário com este nome'});
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailNormalizado)) {
+        res.status(400).json({ mensagem: 'Por favor, informe um email válido.' });
         return;
       }
+
+      if (typeof senha !== 'string' || senha.length < 6) {
+        res.status(400).json({ mensagem: 'A senha deve ter pelo menos 6 caracteres.' });
+        return;
+      }
+
+      const usernameExistente = await Usuario.findOne({
+        username: { $regex: new RegExp(`^${escapeRegex(usernameNormalizado)}$`, 'i') },
+      });
+
+      if (usernameExistente) {
+        res.status(400).json({ mensagem: 'Já existe um usuário com este nome de usuário.' });
+        return;
+      }
+
+      const usuarioExistente = await Usuario.findOne({ email: emailNormalizado });
 
       if (usuarioExistente) {
         res.status(400).json({ mensagem: 'Já existe uma conta cadastrada com este email.' });
@@ -38,7 +72,7 @@ export class AuthController {
 
       const novoUsuario = await Usuario.create({
         nome: nome.trim(),
-        username: usernameNormalizado.trim(),
+        username: usernameNormalizado,
         email: emailNormalizado,
         senha: senhaHash,
       });
@@ -63,23 +97,26 @@ export class AuthController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      const { identificador, senha } = req.body;
+      const { identificador, email, username, senha } = req.body;
 
-      if (!identificador || !senha) {
+      const valorIdentificador = identificador ?? email ?? username;
+
+      if (!valorIdentificador || !senha || typeof valorIdentificador !== 'string' || typeof senha !== 'string') {
         res.status(400).json({ mensagem: 'Email/Usuário e senha são obrigatórios.' });
         return;
       }
 
-      const termoBusca = identificador.trim
+      const termoBusca = valorIdentificador.trim();
+      if (!termoBusca) {
+        res.status(400).json({ mensagem: 'Email/Usuário e senha são obrigatórios.' });
+        return;
+      }
 
-
-  
-      
       const usuario = await Usuario.findOne({
         $or: [
-          {email: termoBusca.toLowerCase()},
-          {username: termoBusca}
-        ]
+          { email: termoBusca.toLowerCase() },
+          { username: { $regex: new RegExp(`^${escapeRegex(termoBusca)}$`, 'i') } },
+        ],
       });
 
       if (!usuario) {

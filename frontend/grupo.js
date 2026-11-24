@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const userDisplay = document.getElementById('user-display');
   const btnLogout = document.getElementById('btn-logout');
   if (user && user.nome) {
-    userDisplay.innerHTML = `Leitor: <strong>${user.nome}</strong>`;
+    const userLabel = user.username ? `${user.nome} (@${user.username})` : user.nome;
+    userDisplay.innerHTML = `Leitor: <strong>${escapeHtml(userLabel)}</strong>`;
   }
   btnLogout.addEventListener('click', () => logout());
 
@@ -110,10 +111,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           else if (item.posicao === 2) medalha = '🥈 ';
           else if (item.posicao === 3) medalha = '🥉 ';
 
+          const userHandle = item.username ? ` <span style="color: var(--text-muted); font-size: 0.85em;">(@${escapeHtml(item.username)})</span>` : '';
           tr.innerHTML = `
             <td class="ranking-pos">${medalha}${item.posicao}º</td>
             <td>
-              <div><strong>${escapeHtml(item.nome)}</strong> ${isCurrentUser ? '<span class="badge">Você</span>' : ''}</div>
+              <div><strong>${escapeHtml(item.nome)}</strong>${userHandle} ${isCurrentUser ? '<span class="badge">Você</span>' : ''}</div>
               <small style="color: var(--text-muted);">${item.totalLivros} ${item.totalLivros === 1 ? 'livro lido' : 'livros lidos'}</small>
             </td>
             <td style="text-align: right; font-weight: 600;">${item.pontos} pág.</td>

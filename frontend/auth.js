@@ -96,12 +96,35 @@ document.addEventListener('DOMContentLoaded', () => {
     clearAlert();
 
     const nome = document.getElementById('register-nome').value.trim();
+    const username = document.getElementById('register-username').value.trim();
     const email = document.getElementById('register-email').value.trim();
     const senha = document.getElementById('register-senha').value;
     const confirmarSenha = document.getElementById('register-confirmar-senha').value;
 
-    if (!nome || !email || !senha) {
+    if (!nome || !username || !email || !senha) {
       showAlert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    if (nome.length < 2) {
+      showAlert('O nome deve ter pelo menos 2 caracteres.');
+      return;
+    }
+
+    if (username.length < 2) {
+      showAlert('O nome de usuário deve ter pelo menos 2 caracteres.');
+      return;
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9_.-]+$/;
+    if (!usernameRegex.test(username)) {
+      showAlert('O nome de usuário deve conter apenas letras, números, sublinhados (_), hífens (-) ou pontos (.).');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showAlert('Por favor, informe um email válido.');
       return;
     }
 
@@ -121,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch(`${API_BASE_URL}/api/auth/registrar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email, senha })
+        body: JSON.stringify({ nome, username, email, senha })
       });
 
       const data = await response.json();
@@ -137,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const loginRes = await fetch(`${API_BASE_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, senha })
+          body: JSON.stringify({ identificador: username || email, senha })
         });
         const loginData = await loginRes.json();
 
@@ -156,7 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Fallback: muda para a aba de login
       setTimeout(() => {
         switchTab('login');
-        document.getElementById('login-email').value = email;
+        const loginIdentificadorInput = document.getElementById('login-identificador');
+        if (loginIdentificadorInput) {
+          loginIdentificadorInput.value = username || email;
+        }
         showAlert('Conta criada! Introduza a sua senha para entrar.', 'success');
       }, 1000);
 

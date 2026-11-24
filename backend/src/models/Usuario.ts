@@ -18,10 +18,10 @@ const UsuarioSchema = new Schema<IUsuario>(
     },
     username: {
       type: String,
-      required: [true, 'User é obrigatório'],
+      required: [true, 'O nome de usuário é obrigatório.'],
       unique: true,
       trim: true,
-      minlength: [2, 'O nome deve ter pelo menos 2 caracteres.'],
+      minlength: [2, 'O nome de usuário deve ter pelo menos 2 caracteres.'],
     },
     email: {
       type: String,
@@ -29,7 +29,7 @@ const UsuarioSchema = new Schema<IUsuario>(
       unique: true,
       trim: true,
       lowercase: true,
-      match: [/^\S+@\S+\.\S+$/, 'Por favor, informe um email válido.'],
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Por favor, informe um email válido.'],
     },
     senha: {
       type: String,

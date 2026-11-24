@@ -11,6 +11,7 @@ describe('Leituras e Progresso (/api/leituras)', () => {
       .post('/api/auth/registrar')
       .send({
         nome: 'Leitor Voraz',
+        username: 'leitor_voraz',
         email: 'leitor.voraz@exemplo.com',
         senha: 'senhaLeitor123',
       });
@@ -18,7 +19,7 @@ describe('Leituras e Progresso (/api/leituras)', () => {
     const resLogin = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'leitor.voraz@exemplo.com',
+        identificador: 'leitor_voraz',
         senha: 'senhaLeitor123',
       });
     token = resLogin.body.token;
