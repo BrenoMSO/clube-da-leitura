@@ -19,7 +19,33 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Rota de Healthcheck
+/**
+ * @openapi
+ * /api/health:
+ *   get:
+ *     summary: Verificar status operacional da API
+ *     description: Retorna o estado atual de integridade do servidor backend e timestamp da verificação.
+ *     tags:
+ *       - Sistema
+ *     responses:
+ *       200:
+ *         description: API funcionando corretamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 message:
+ *                   type: string
+ *                   example: Sistema de Competição de Leitura - API em funcionamento!
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2026-11-24T10:00:00.000Z
+ */
 app.get('/api/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
@@ -33,7 +59,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/grupos', grupoRoutes);
 app.use('/api/leituras', leituraRoutes);
 app.use('/api/livros', livroRoutes);
+
+// Documentação Swagger (UI interativa e especificação em JSON)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/api-docs.json', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).send(swaggerSpec);
+});
 
 // Tratamento de rotas não encontradas
 app.use((_req: Request, res: Response) => {
@@ -47,6 +79,7 @@ export const startServer = async () => {
   app.listen(PORT, () => {
     console.log(`🚀 [Server] Servidor rodando na porta ${PORT}`);
     console.log(`📖 [API] Competição de Leitura pronta em http://localhost:${PORT}`);
+    console.log(`📚 [Swagger] Documentação disponível em http://localhost:${PORT}/api-docs`);
   });
 };
 
