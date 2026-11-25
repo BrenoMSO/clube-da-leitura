@@ -8,7 +8,7 @@
 const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = IS_LOCAL 
   ? 'http://localhost:3000' 
-  : 'https://clube-da-leitura-api.onrender.com'; // Altere aqui para a URL do seu backend em produção
+  : 'https://clube-da-leitura-nine.vercel.app/'; // Altere aqui para a URL do seu backend em produção
 
 const STORAGE_KEYS = {
   TOKEN: 'clube_leitura_token',
