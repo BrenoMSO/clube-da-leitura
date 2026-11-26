@@ -7,4 +7,5 @@
 5. Criação da modalidade de Estudos
 6. Criação da dinâmica de Clube do Livro
 7. Implementar a possibilidade de deletar e editar o Livro no catálogo
-8. Menu de configuração de usuário.
+8. Menu de configuração de perfil de usuário.
+9. Endpoints de delete
