@@ -18,6 +18,7 @@ const allowedOrigins = [
   'http://localhost:5500',
   'http://127.0.0.1:5500',
   'https://brenomso.github.io',
+  'https://clube-da-leitura-nine.vercel.app',
 ];
 
 // Middlewares
@@ -80,10 +81,37 @@ app.use('/api/leituras', leituraRoutes);
 app.use('/api/livros', livroRoutes);
 
 // Documentação Swagger (UI interativa e especificação em JSON)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api-docs.json', (_req: Request, res: Response) => {
   res.setHeader('Content-Type', 'application/json');
-  res.status(200).send(swaggerSpec);
+  res.status(200).json(swaggerSpec);
+});
+
+app.get('/api-docs', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.status(200).send(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Clube da Leitura - Swagger</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: '/api-docs.json',
+        dom_id: '#swagger-ui',
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+        layout: 'StandaloneLayout',
+      });
+    };
+  </script>
+</body>
+</html>`);
 });
 
 // Tratamento de rotas não encontradas

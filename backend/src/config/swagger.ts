@@ -12,8 +12,12 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: process.env.SERVER_URL || `http://localhost:${process.env.PORT || 3000}`,
-        description: 'Servidor local da API',
+        url: process.env.SERVER_URL || 'https://clube-da-leitura-nine.vercel.app',
+        description: 'Servidor de Produção (Vercel)',
+      },
+      {
+        url: `http://localhost:${process.env.PORT || 3000}`,
+        description: 'Servidor Local',
       },
     ],
     tags: [
